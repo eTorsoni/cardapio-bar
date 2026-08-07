@@ -13,17 +13,6 @@ const products = {
             discount: 50
         },
         {
-            id: 2,
-            name: 'Cerveja Amstel 600ml',
-            category: 'Happy Hour',
-            price: 12.00,
-            originalPrice: 24.00,
-            imageUrl: "img/cerveja.jpg",
-            badge: 'Happy Hour',
-            description: 'Cerveja premium gelada com o melhor sabor',
-            discount: 50
-        },
-        {
             id: 3,
             name: 'Chopp Amstel',
             category: 'Happy Hour',
