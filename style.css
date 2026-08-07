@@ -21,9 +21,16 @@ body {
     line-height: 1.6;
 }
 
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
+
 .header {
-    background: linear-gradient(135deg, var(--card-bg) 0%, #1a1a1a 100%);
+    background: linear-gradient(
+        135deg,
+        var(--card-bg) 0%,
+        #1a1a1a 100%
+    );
     border-bottom: 3px solid var(--primary-color);
     padding: 20px 0;
     position: sticky;
@@ -48,7 +55,11 @@ body {
 }
 
 .cart-btn {
-    background: linear-gradient(135deg, var(--accent-orange) 0%, #E67E22 100%);
+    background: linear-gradient(
+        135deg,
+        var(--accent-orange) 0%,
+        #E67E22 100%
+    );
     color: white;
     border: none;
     padding: 12px 24px;
@@ -80,15 +91,27 @@ body {
     font-weight: bold;
 }
 
-/* CONTAINER */
+/* =========================
+   CONTAINER
+========================= */
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 40px 20px;
 }
 
+/* =========================
+   HERO
+========================= */
+
 .hero {
-    background: linear-gradient(180deg, rgba(10,10,10,0.95) 0%, rgba(26,26,26,0.98) 100%);
+    background:
+        linear-gradient(
+            180deg,
+            rgba(10, 10, 10, 0.95) 0%,
+            rgba(26, 26, 26, 0.98) 100%
+        );
     border: 1px solid rgba(212, 175, 55, 0.15);
     border-radius: 24px;
     padding: 60px 40px;
@@ -148,7 +171,11 @@ body {
 }
 
 .hero-btn {
-    background: linear-gradient(135deg, var(--accent-orange) 0%, #E67E22 100%);
+    background: linear-gradient(
+        135deg,
+        var(--accent-orange) 0%,
+        #E67E22 100%
+    );
     color: var(--text-light);
 }
 
@@ -167,7 +194,10 @@ body {
     background: rgba(212, 175, 55, 0.08);
 }
 
-/* SEÇÕES */
+/* =========================
+   SEÇÕES
+========================= */
+
 .menu-section {
     margin-bottom: 60px;
 }
@@ -183,14 +213,23 @@ body {
     display: inline-block;
 }
 
-/* GRID DE MENU */
+/* =========================
+   GRID DE MENU
+========================= */
+
 .menu-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(280px, 1fr)
+    );
     gap: 25px;
 }
 
-/* CARDS DE PRODUTO */
+/* =========================
+   CARDS DE PRODUTO
+========================= */
+
 .product-card {
     background: var(--card-bg);
     border-radius: 12px;
@@ -211,7 +250,11 @@ body {
     position: absolute;
     top: 10px;
     left: 10px;
-    background: linear-gradient(135deg, var(--accent-orange) 0%, #FF6B6B 100%);
+    background: linear-gradient(
+        135deg,
+        var(--accent-orange) 0%,
+        #FF6B6B 100%
+    );
     color: white;
     padding: 6px 12px;
     border-radius: 20px;
@@ -289,7 +332,11 @@ body {
 
 .add-to-cart-btn {
     width: 100%;
-    background: linear-gradient(135deg, var(--primary-color) 0%, #C9A127 100%);
+    background: linear-gradient(
+        135deg,
+        var(--primary-color) 0%,
+        #C9A127 100%
+    );
     color: var(--dark-bg);
     border: none;
     padding: 12px;
@@ -311,7 +358,10 @@ body {
     transform: scale(0.98);
 }
 
-/* MODAL */
+/* =========================
+   MODAL
+========================= */
+
 .modal {
     display: none;
     position: fixed;
@@ -334,6 +384,7 @@ body {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -356,6 +407,7 @@ body {
         transform: translateY(-50px);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -376,7 +428,8 @@ body {
     font-size: 24px;
 }
 
-.close-btn, .confirm-close-btn {
+.close-btn,
+.confirm-close-btn {
     background: none;
     border: none;
     font-size: 28px;
@@ -385,11 +438,15 @@ body {
     transition: transform 0.2s;
 }
 
-.close-btn:hover, .confirm-close-btn:hover {
+.close-btn:hover,
+.confirm-close-btn:hover {
     transform: rotate(90deg);
 }
 
-/* CARRINHO */
+/* =========================
+   CARRINHO
+========================= */
+
 .empty-cart {
     text-align: center;
     color: var(--text-muted);
@@ -453,7 +510,10 @@ body {
     background: #FF5252;
 }
 
-/* RESUMO DO CARRINHO */
+/* =========================
+   RESUMO DO CARRINHO
+========================= */
+
 .cart-summary {
     background: rgba(212, 175, 55, 0.1);
     padding: 15px;
@@ -478,7 +538,10 @@ body {
     color: var(--primary-color);
 }
 
-/* FORMULÁRIO DE CHECKOUT */
+/* =========================
+   FORMULÁRIO
+========================= */
+
 .checkout-form {
     display: none;
     margin-top: 20px;
@@ -519,7 +582,11 @@ body {
 
 .checkout-btn {
     width: 100%;
-    background: linear-gradient(135deg, var(--success-color) 0%, #45a049 100%);
+    background: linear-gradient(
+        135deg,
+        var(--success-color) 0%,
+        #45a049 100%
+    );
     color: white;
     border: none;
     padding: 14px;
@@ -543,7 +610,10 @@ body {
     transform: none;
 }
 
-/* MODAL DE CONFIRMAÇÃO */
+/* =========================
+   MODAL DE CONFIRMAÇÃO
+========================= */
+
 .confirm-content {
     text-align: center;
     padding: 40px 30px;
@@ -557,9 +627,11 @@ body {
 }
 
 @keyframes bounce {
-    0%, 100% {
+    0%,
+    100% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.2);
     }
@@ -578,7 +650,11 @@ body {
 }
 
 .confirm-close-btn {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #C9A127 100%);
+    background: linear-gradient(
+        135deg,
+        var(--primary-color) 0%,
+        #C9A127 100%
+    );
     color: var(--dark-bg);
     padding: 12px 30px;
     border-radius: 6px;
@@ -590,10 +666,34 @@ body {
     transform: scale(1.05);
 }
 
-/* RESPONSIVO */
+/* =========================
+   RESPONSIVO - TABLET
+========================= */
+
 @media (max-width: 768px) {
+
+    .container {
+        padding: 25px 15px;
+    }
+
+    .hero {
+        padding: 45px 25px;
+        border-radius: 18px;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-text {
+        font-size: 1rem;
+    }
+
     .menu-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-template-columns: repeat(
+            auto-fill,
+            minmax(200px, 1fr)
+        );
         gap: 15px;
     }
 
@@ -616,10 +716,11 @@ body {
     }
 }
 
+/* =========================
+   RESPONSIVO - CELULAR
+========================= */
+
 @media (max-width: 480px) {
-    .menu-grid {
-        grid-template-columns: 1fr;
-    }
 
     .header-content {
         flex-direction: column;
@@ -631,7 +732,33 @@ body {
         justify-content: center;
     }
 
+    .hero {
+        padding: 35px 20px;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+    }
+
+    .hero-btn,
+    .hero-secondary {
+        width: 100%;
+    }
+
+    .menu-grid {
+        grid-template-columns: 1fr;
+    }
+
     .product-card {
         max-width: 100%;
+    }
+
+    .product-image-wrapper,
+    .product-image {
+        height: 240px;
     }
 }
