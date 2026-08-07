@@ -18,7 +18,7 @@ const products = {
             category: 'Happy Hour',
             price: 12.00,
             originalPrice: 24.00,
-            imageUrl: "img/cerveja AMS.jpg",
+            imageUrl: "img/cerveja-ams.jpg",
             badge: 'Happy Hour',
             description: 'Cerveja premium gelada com o melhor sabor',
             discount: 50
