@@ -762,3 +762,122 @@ body {
         height: 240px;
     }
 }
+
+.admin-panel {
+    margin-top: 40px;
+    background: #111;
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    border-radius: 18px;
+    padding: 24px;
+}
+
+.crud-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.crud-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-light);
+}
+
+.crud-form input,
+.crud-form select,
+.crud-form textarea {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    color: var(--text-light);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.crud-form textarea {
+    resize: vertical;
+}
+
+.crud-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.submit-btn,
+.cancel-btn,
+.edit-btn,
+.delete-btn {
+    border: none;
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, var(--primary-color), #c99a1d);
+    color: #111;
+}
+
+.cancel-btn {
+    background: #444;
+    color: white;
+}
+
+.edit-btn {
+    background: #1e5f8a;
+    color: white;
+}
+
+.delete-btn {
+    background: #c43d3d;
+    color: white;
+}
+
+.admin-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.admin-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    background: rgba(212, 175, 55, 0.08);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    border-radius: 12px;
+    padding: 14px 16px;
+}
+
+.admin-item strong,
+.admin-item span {
+    display: block;
+}
+
+.admin-item span {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
