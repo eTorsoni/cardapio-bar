@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "./context/AuthContext";
+import AuthPage from "./pages/AuthPage";
 import { supabase } from "./services/supabaseClient";
 import "./style.css";
 
@@ -13,13 +15,67 @@ const emptyForm = {
 };
 
 function App() {
+  const { session, loading: authLoading, signOut } = useAuth();
   const [happyHour, setHappyHour] = useState([]);
   const [combos, setCombos] = useState([]);
   const [cart, setCart] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
+
+  useEffect(() => {
+    if (!session) {
+      setHappyHour([]);
+      setCombos([]);
+      return;
+    }
+
+    async function carregarProdutos() {
+      setLoading(true);
+
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .order("id", { ascending: true });
+
+      if (error) {
+        console.error("Erro ao carregar produtos:", error);
+        setLoading(false);
+        return;
+      }
+
+      setHappyHour(data.filter((produto) => produto.category === "Happy Hour"));
+      setCombos(data.filter((produto) => produto.category === "Combos"));
+      setLoading(false);
+    }
+
+    carregarProdutos();
+
+    const channel = supabase
+      .channel("products-realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "products" },
+        () => {
+          carregarProdutos();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [session]);
+
+  if (authLoading) {
+    return <div className="auth-loading">Carregando...</div>;
+  }
+
+  if (!session) {
+    return <AuthPage />;
+  }
 
   async function carregarProdutos() {
     setLoading(true);
@@ -39,25 +95,6 @@ function App() {
     setCombos(data.filter((produto) => produto.category === "Combos"));
     setLoading(false);
   }
-
-  useEffect(() => {
-    carregarProdutos();
-
-    const channel = supabase
-      .channel("products-realtime")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "products" },
-        () => {
-          carregarProdutos();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
 
   function adicionarAoCarrinho(produto) {
     setCart((cartAtual) => {
@@ -258,16 +295,60 @@ function App() {
     );
   }
 
+  function toggleMenu() {
+    setMenuOpen((prev) => !prev);
+  }
+
+  function fecharMenu() {
+    setMenuOpen(false);
+  }
+
+  function handleMenuLinkClick() {
+    fecharMenu();
+  }
+
   return (
     <>
       <header className="header">
         <div className="header-content">
-          <h1 className="logo">🍺 Happy Hour Bar</h1>
+          <div className="brand-wrap">
+            <button
+              type="button"
+              className="menu-toggle"
+              aria-label="Abrir menu"
+              aria-expanded={menuOpen}
+              onClick={toggleMenu}
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
 
-          <button className="cart-btn" onClick={() => setCartOpen(true)}>
-            🛒 Carrinho
-            <span className="cart-count">{cartTotalItems}</span>
-          </button>
+            <h1 className="logo">🍺 Happy Hour Bar</h1>
+          </div>
+
+          <nav className={`main-nav ${menuOpen ? "open" : ""}`}>
+            <a href="#happy" onClick={handleMenuLinkClick}>Happy Hour</a>
+            <a href="#combos" onClick={handleMenuLinkClick}>Combos</a>
+            <a href="#admin" onClick={handleMenuLinkClick}>Gerenciar</a>
+          </nav>
+
+          <div className="header-actions">
+            <button className="cart-btn" onClick={() => setCartOpen(true)}>
+              🛒 Carrinho
+              <span className="cart-count">{cartTotalItems}</span>
+            </button>
+
+            <button
+              type="button"
+              className="logout-btn"
+              onClick={async () => {
+                await signOut();
+              }}
+            >
+              Sair
+            </button>
+          </div>
         </div>
       </header>
 
@@ -320,7 +401,7 @@ function App() {
           </div>
         </section>
 
-        <section className="admin-panel">
+        <section id="admin" className="admin-panel">
           <h2 className="section-title">Gerenciar Cardápio</h2>
 
           <form className="crud-form" onSubmit={handleSubmit}>
