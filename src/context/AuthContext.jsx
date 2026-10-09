@@ -50,7 +50,10 @@ export function AuthProvider({ children }) {
   };
 
   const signInWithGoogle = async () => {
-    const redirectTo = `${window.location.origin}/`;
+    const redirectTo =
+      import.meta.env.DEV
+        ? "http://localhost:5173"
+        : "https://cardapio-bar.pages.dev";
 
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
