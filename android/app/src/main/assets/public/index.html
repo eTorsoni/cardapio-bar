@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Hour Bar - Cardápio</title>
+</head>
+<body>
+    <div id="app"></div>
+    <!-- Este arquivo será sobrescrito durante o build do Vite -->
+    <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <div class="hero-content">
+                <span class="hero-label">Happy Hour Bar</span>
+                <h2 class="hero-title">O ponto certo para seus melhores drinks.</h2>
+                <p class="hero-text">Explore um cardápio de bebidas geladas, petiscos crocantes e combos premium com energia para a sua noite. Traga os amigos, peça no conforto do seu lar e aproveite o sabor do verdadeiro happy hour.</p>
+                <div class="hero-actions">
+                    <a class="hero-btn" href="#happyHourMenu">Ver cardápio</a>
+                    <a class="hero-secondary" href="#combosMenu">Ver combos</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO HAPPY HOUR -->
+        <section class="menu-section">
+            <h2 class="section-title">Happy Hour</h2>
+            <div class="menu-grid" id="happyHourMenu">
+                <!-- Produtos carregados via JavaScript -->
+            </div>
+        </section>
+
+        <!-- SEÇÃO COMBOS -->
+        <section class="menu-section">
+            <h2 class="section-title">Combos com Energéticos</h2>
+            <div class="menu-grid" id="combosMenu">
+                <!-- Produtos carregados via JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL DO CARRINHO -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Seu Carrinho</h2>
+                <button class="close-btn" id="closeCartBtn">&times;</button>
+            </div>
+            
+            <div class="cart-items" id="cartItems">
+                <p class="empty-cart">Seu carrinho está vazio</p>
+            </div>
+            
+            <div class="cart-summary">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">R$ 0,00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Taxa de Entrega:</span>
+                    <span id="delivery">R$ 0,00</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <span id="total">R$ 0,00</span>
+                </div>
+            </div>
+
+            <div class="checkout-form">
+                <h3>Dados para Entrega</h3>
+                <input type="text" id="customerName" placeholder="Seu Nome" class="form-input">
+                <input type="email" id="customerEmail" placeholder="Seu E-mail" class="form-input">
+                <input type="tel" id="customerPhone" placeholder="Seu Telefone" class="form-input">
+                <textarea id="customerAddress" placeholder="Endereço de Entrega" class="form-input" rows="3"></textarea>
+                
+                <button class="checkout-btn" id="checkoutBtn">Finalizar Pedido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIRMAÇÃO -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content confirm-content">
+            <div class="success-icon">✓</div>
+            <h2>Pedido Confirmado!</h2>
+            <p id="confirmMessage"></p>
+            <button class="confirm-close-btn" id="confirmCloseBtn">Fechar</button>
+        </div>
+    </div>
+
+    <script src="products.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
