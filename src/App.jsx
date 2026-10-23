@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { useAuth } from "./context/AuthContext";
 import AuthPage from "./pages/AuthPage";
 import { supabase } from "./services/supabaseClient";
@@ -24,6 +25,39 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
+  const [selectedCameraPhoto, setSelectedCameraPhoto] = useState(null);
+
+  async function openImageSource(source) {
+    try {
+      const image = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: CameraResultType.Uri,
+        source,
+        saveToGallery: false,
+        correctOrientation: true,
+      });
+
+      if (image?.webPath) {
+        handleInputChange("image_url", image.webPath);
+        setSelectedCameraPhoto({ webPath: image.webPath, format: image.format });
+        return;
+      }
+
+      alert("Não foi possível carregar a imagem selecionada.");
+    } catch (error) {
+      console.error("Erro ao acessar a câmera/galeria:", error);
+      alert("Não foi possível abrir a câmera ou a galeria do dispositivo.");
+    }
+  }
+
+  function handleOpenCamera() {
+    openImageSource(CameraSource.Camera);
+  }
+
+  function handleOpenGallery() {
+    openImageSource(CameraSource.Photos);
+  }
 
   useEffect(() => {
     if (!session) {
@@ -149,11 +183,15 @@ function App() {
   }
 
   function handleInputChange(field, value) {
+    if (field === "image_url") {
+      setSelectedCameraPhoto(null);
+    }
     setFormData((prev) => ({ ...prev, [field]: value }));
   }
 
   function resetForm() {
     setEditingId(null);
+    setSelectedCameraPhoto(null);
     setFormData(emptyForm);
   }
 
@@ -175,14 +213,40 @@ function App() {
       return;
     }
 
+    let imageUrl = formData.image_url.trim();
+    if (selectedCameraPhoto) {
+      try {
+        const imageResponse = await fetch(selectedCameraPhoto.webPath);
+        if (!imageResponse.ok) {
+          throw new Error("Nao foi possivel ler a foto selecionada no dispositivo.");
+        }
+
+        const imageBlob = await imageResponse.blob();
+        const extension = (selectedCameraPhoto.format || "jpeg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+        const imagePath = `${Date.now()}-${Math.random().toString(36).slice(2)}.${extension}`;
+        const contentType = imageBlob.type || `image/${extension === "jpg" ? "jpeg" : extension}`;
+        const { error: uploadError } = await supabase.storage
+          .from("product-images")
+          .upload(imagePath, imageBlob, { contentType });
+
+        if (uploadError) {
+          showSupabaseError("Nao foi possivel enviar a foto. Confira o bucket de imagens no Supabase.", uploadError);
+          return;
+        }
+
+        imageUrl = supabase.storage.from("product-images").getPublicUrl(imagePath).data.publicUrl;
+      } catch (error) {
+        showSupabaseError("Nao foi possivel preparar a foto selecionada.", error);
+        return;
+      }
+    }
+
     const payload = {
       name: formData.name.trim(),
       category: formData.category,
       price: Number(formData.price || 0),
       original_price: formData.original_price ? Number(formData.original_price) : null,
-      image_url:
-        formData.image_url.trim() ||
-        "https://placehold.co/600x400/1a1a1a/D4AF37?text=Happy+Hour",
+      image_url: imageUrl || "https://placehold.co/600x400/1a1a1a/D4AF37?text=Happy+Hour",
       description: formData.description.trim(),
       badge: formData.badge.trim(),
     };
@@ -208,6 +272,7 @@ function App() {
   }
 
   function handleEdit(product) {
+    setSelectedCameraPhoto(null);
     setEditingId(product.id);
     setFormData({
       name: product.name || "",
@@ -452,16 +517,6 @@ function App() {
               </label>
 
               <label>
-                Imagem (URL)
-                <input
-                  type="text"
-                  value={formData.image_url}
-                  onChange={(e) => handleInputChange("image_url", e.target.value)}
-                  placeholder="https://..."
-                />
-              </label>
-
-              <label>
                 Badge
                 <input
                   type="text"
@@ -470,6 +525,43 @@ function App() {
                   placeholder="Popular"
                 />
               </label>
+            </div>
+
+            <label className="image-field">
+              Imagem
+              <div className="image-picker-actions">
+                <button type="button" className="camera-action-btn" onClick={handleOpenCamera}>
+                  📷 Câmera
+                </button>
+                <button
+                  type="button"
+                  className="camera-action-btn secondary"
+                  onClick={handleOpenGallery}
+                >
+                  🖼️ Galeria
+                </button>
+              </div>
+              <input
+                type="text"
+                value={formData.image_url}
+                onChange={(e) => handleInputChange("image_url", e.target.value)}
+                placeholder="https://... ou arquivo local"
+              />
+            </label>
+
+            <div className="image-preview-wrap">
+              <img
+                src={
+                  formData.image_url ||
+                  "https://placehold.co/600x400/1a1a1a/D4AF37?text=Happy+Hour"
+                }
+                alt="Pré-visualização da imagem do produto"
+                className="image-preview"
+                onError={(e) => {
+                  e.target.src =
+                    "https://placehold.co/600x400/1a1a1a/D4AF37?text=Happy+Hour";
+                }}
+              />
             </div>
 
             <label>
