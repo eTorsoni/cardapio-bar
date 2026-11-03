@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Capacitor } from "@capacitor/core";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { Geolocation } from "@capacitor/geolocation";
 import { useAuth } from "./context/AuthContext";
@@ -36,19 +37,36 @@ function App() {
     setLocationError("");
 
     try {
-      const permission = await Geolocation.checkPermissions();
-      if (permission.location !== "granted") {
-        const requested = await Geolocation.requestPermissions({ permissions: ["location"] });
-        if (requested.location !== "granted") {
-          throw new Error("Permissão de localização negada. Permita o acesso nas configurações do Android.");
+      let position;
+
+      if (Capacitor.isNativePlatform()) {
+        const permission = await Geolocation.checkPermissions();
+        if (permission.location !== "granted") {
+          const requested = await Geolocation.requestPermissions({ permissions: ["location"] });
+          if (requested.location !== "granted") {
+            throw new Error("Permissão de localização negada. Permita o acesso nas configurações do Android.");
+          }
         }
+
+        position = await Geolocation.getCurrentPosition({
+          enableHighAccuracy: true,
+          timeout: 20000,
+          maximumAge: 0,
+        });
+      } else {
+        if (!navigator.geolocation) {
+          throw new Error("Este navegador não oferece suporte à localização.");
+        }
+
+        position = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 20000,
+            maximumAge: 0,
+          });
+        });
       }
 
-      const position = await Geolocation.getCurrentPosition({
-        enableHighAccuracy: true,
-        timeout: 20000,
-        maximumAge: 0,
-      });
       setLocation({
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
@@ -56,7 +74,12 @@ function App() {
       });
     } catch (error) {
       console.error("Erro ao obter localização:", error);
-      setLocationError(error?.message || "Não foi possível obter sua localização. Verifique se o GPS está ativado.");
+      const errorMessages = {
+        1: "Permissão de localização negada. Autorize o acesso à localização no navegador.",
+        2: "Não foi possível determinar sua localização. Verifique se a localização está ativada.",
+        3: "A localização demorou demais para responder. Tente novamente.",
+      };
+      setLocationError(errorMessages[error?.code] || error?.message || "Não foi possível obter sua localização.");
     } finally {
       setLocationLoading(false);
     }
