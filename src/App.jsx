@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
+import { Geolocation } from "@capacitor/geolocation";
 import { useAuth } from "./context/AuthContext";
 import AuthPage from "./pages/AuthPage";
 import { supabase } from "./services/supabaseClient";
@@ -26,6 +27,40 @@ function App() {
   const [formData, setFormData] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [selectedCameraPhoto, setSelectedCameraPhoto] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [locationLoading, setLocationLoading] = useState(false);
+  const [locationError, setLocationError] = useState("");
+
+  async function captureLocation() {
+    setLocationLoading(true);
+    setLocationError("");
+
+    try {
+      const permission = await Geolocation.checkPermissions();
+      if (permission.location !== "granted") {
+        const requested = await Geolocation.requestPermissions({ permissions: ["location"] });
+        if (requested.location !== "granted") {
+          throw new Error("Permissão de localização negada. Permita o acesso nas configurações do Android.");
+        }
+      }
+
+      const position = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 20000,
+        maximumAge: 0,
+      });
+      setLocation({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        accuracy: position.coords.accuracy,
+      });
+    } catch (error) {
+      console.error("Erro ao obter localização:", error);
+      setLocationError(error?.message || "Não foi possível obter sua localização. Verifique se o GPS está ativado.");
+    } finally {
+      setLocationLoading(false);
+    }
+  }
 
   async function openImageSource(source) {
     try {
@@ -435,6 +470,36 @@ function App() {
                 Ver Combos
               </a>
             </div>
+          </div>
+        </section>
+
+        <section className="location-panel" aria-labelledby="location-title">
+          <div>
+            <h2 id="location-title">Sua localização</h2>
+            <p>Use o GPS do celular para capturar suas coordenadas e abrir no Google Maps.</p>
+            {location && (
+              <div className="location-coordinates" aria-live="polite">
+                <span>Latitude: {location.latitude.toFixed(6)}</span>
+                <span>Longitude: {location.longitude.toFixed(6)}</span>
+                <span>Precisão: aproximadamente {Math.round(location.accuracy)} m</span>
+              </div>
+            )}
+            {locationError && <p className="location-error" role="alert">{locationError}</p>}
+          </div>
+          <div className="location-actions">
+            <button type="button" className="location-btn" onClick={captureLocation} disabled={locationLoading}>
+              {locationLoading ? "Obtendo localização..." : location ? "Atualizar localização" : "Obter minha localização"}
+            </button>
+            {location && (
+              <a
+                className="location-map-link"
+                href={`https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Abrir no Google Maps
+              </a>
+            )}
           </div>
         </section>
 
