@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Capacitor } from "@capacitor/core";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { Geolocation } from "@capacitor/geolocation";
+import { LocalNotifications } from "@capacitor/local-notifications";
 import { useAuth } from "./context/AuthContext";
 import AuthPage from "./pages/AuthPage";
 import { supabase } from "./services/supabaseClient";
@@ -31,6 +32,86 @@ function App() {
   const [location, setLocation] = useState(null);
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState("");
+  const [notificationPermission, setNotificationPermission] = useState("Desconhecida");
+  const [notificationStatus, setNotificationStatus] = useState("");
+  const [notificationBusy, setNotificationBusy] = useState(false);
+
+  async function checkNotificationPermission() {
+    if (!Capacitor.isNativePlatform()) {
+      setNotificationPermission("Disponível no app Android/iOS");
+      setNotificationStatus("Permissões nativas podem ser verificadas no aplicativo instalado no dispositivo.");
+      return null;
+    }
+
+    const result = await LocalNotifications.checkPermissions();
+    setNotificationPermission(result.display);
+    return result.display;
+  }
+
+  async function requestNotificationPermission() {
+    setNotificationBusy(true);
+    setNotificationStatus("");
+    try {
+      let permission = await checkNotificationPermission();
+      if (!Capacitor.isNativePlatform()) return;
+      if (permission !== "granted") {
+        const requested = await LocalNotifications.requestPermissions();
+        permission = requested.display;
+        setNotificationPermission(permission);
+      }
+      setNotificationStatus(permission === "granted"
+        ? "Permissão concedida. As notificações estão prontas para uso."
+        : "Permissão não concedida. Ative as notificações nas configurações do dispositivo.");
+    } catch (error) {
+      console.error("Erro ao solicitar permissão de notificação:", error);
+      setNotificationStatus(error?.message || "Não foi possível verificar ou solicitar a permissão.");
+    } finally {
+      setNotificationBusy(false);
+    }
+  }
+
+  async function sendLocalNotification(delaySeconds = 0) {
+    setNotificationBusy(true);
+    setNotificationStatus("");
+    try {
+      if (!Capacitor.isNativePlatform()) {
+        throw new Error("Instale e abra o app no Android ou iOS para receber notificações locais.");
+      }
+      let permission = await checkNotificationPermission();
+      if (permission !== "granted") {
+        const requested = await LocalNotifications.requestPermissions();
+        permission = requested.display;
+        setNotificationPermission(permission);
+      }
+      if (permission !== "granted") {
+        throw new Error("Permissão de notificações negada. Ative-a nas configurações do dispositivo.");
+      }
+      const scheduledAt = new Date(Date.now() + delaySeconds * 1000);
+      await LocalNotifications.schedule({ notifications: [{
+        id: delaySeconds === 0 ? 1001 : 1000 + Math.floor(Date.now() / 1000) % 100000,
+        title: delaySeconds === 0 ? "Happy Hour Bar 🍹" : "Seu alerta de Happy Hour 🍻",
+        body: delaySeconds === 0
+          ? "Seu próximo drink favorito está esperando. Confira nosso cardápio!"
+          : "Hora de aproveitar! Confira as ofertas e combos do Happy Hour Bar.",
+        schedule: { at: scheduledAt },
+        channelId: "happy-hour-alerts",
+      }] });
+      setNotificationStatus(delaySeconds === 0
+        ? "Notificação enviada. Confira a central de notificações do dispositivo."
+        : `Alerta agendado para ${scheduledAt.toLocaleTimeString("pt-BR")}.`);
+    } catch (error) {
+      console.error("Erro ao enviar notificação:", error);
+      setNotificationStatus(error?.message || "Não foi possível programar a notificação.");
+    } finally {
+      setNotificationBusy(false);
+    }
+  }
+
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    LocalNotifications.createChannel({ id: "happy-hour-alerts", name: "Alertas do Happy Hour", description: "Ofertas e lembretes do bar", importance: 4 })
+      .catch((error) => console.error("Erro ao criar canal de notificações:", error));
+  }, []);
 
   async function captureLocation() {
     setLocationLoading(true);
@@ -523,6 +604,26 @@ function App() {
                 Abrir no Google Maps
               </a>
             )}
+          </div>
+        </section>
+
+        <section className="location-panel notification-panel" aria-labelledby="notification-title">
+          <div>
+            <h2 id="notification-title">Alertas do Happy Hour</h2>
+            <p>Receba novidades e lembretes do nosso cardápio mesmo quando o app estiver fechado.</p>
+            <p aria-live="polite">Permissão: <strong>{notificationPermission}</strong></p>
+            {notificationStatus && <p role="status">{notificationStatus}</p>}
+          </div>
+          <div className="location-actions">
+            <button type="button" className="location-btn" onClick={requestNotificationPermission} disabled={notificationBusy}>
+              Verificar / permitir notificações
+            </button>
+            <button type="button" className="location-btn" onClick={() => sendLocalNotification(0)} disabled={notificationBusy}>
+              Enviar notificação agora
+            </button>
+            <button type="button" className="location-btn" onClick={() => sendLocalNotification(5)} disabled={notificationBusy}>
+              Agendar alerta em 5 segundos
+            </button>
           </div>
         </section>
 
