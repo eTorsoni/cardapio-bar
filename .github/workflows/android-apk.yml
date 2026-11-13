@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Generate Android icons and splash screen
+        run: npm run assets:android
+
       - name: Build web app
         run: npm run build
 

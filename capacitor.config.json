@@ -1,5 +1,14 @@
 {
   "appId": "com.cardapio.bar",
   "appName": "Cardápio Bar",
-  "webDir": "dist"
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "launchAutoHide": true,
+      "backgroundColor": "#171513",
+      "androidSplashResourceName": "splash",
+      "showSpinner": false
+    }
+  }
 }

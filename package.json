@@ -2,9 +2,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "assets:android": "npx capacitor-assets generate --android --iconBackgroundColor \"#171513\" --iconBackgroundColorDark \"#171513\" --splashBackgroundColor \"#171513\" --splashBackgroundColorDark \"#171513\""
   },
   "devDependencies": {
+    "@capacitor/assets": "^4.0.0",
     "@capacitor/cli": "^8.5.0",
     "@capacitor/core": "^8.5.0",
     "@vitejs/plugin-react": "^4.2.0",
@@ -17,6 +19,7 @@
     "@capacitor/camera": "^8.2.6",
     "@capacitor/geolocation": "^8.2.4",
     "@capacitor/local-notifications": "^8.3.1",
+    "@capacitor/splash-screen": "^8.0.2",
     "@supabase/supabase-js": "^2.117.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
