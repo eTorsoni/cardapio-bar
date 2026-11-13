@@ -1,4 +1,14 @@
-# Cardapio Bar
+# Cardápio Bar
+
+## Apresentação do app
+
+Confira as telas do Cardápio Bar em mockups do Google Pixel 11 Pro.
+
+<div align="center">
+  <img src="docs/screenshots/tela-inicial.png" alt="Tela inicial do Cardápio Bar" width="260" />
+  <img src="docs/screenshots/identidade-visual.png" alt="Identidade visual do Cardápio Bar" width="260" />
+  <img src="docs/screenshots/combos-whisky.png" alt="Tela de combos do Cardápio Bar" width="260" />
+</div>
 
 ## Android APK
 
