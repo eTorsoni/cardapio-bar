@@ -6,9 +6,20 @@ Confira as telas do Cardápio Bar em mockups do Google Pixel 11 Pro.
 
 <div align="center">
   <img src="docs/screenshots/identidade-visual.png" alt="Identidade visual do Cardápio Bar" width="260" />
-  <img src="docs/screenshots/combos-whisky.png" alt="Tela de combos do Cardápio Bar" width="260" />
   <img src="docs/screenshots/tela-inicial.png" alt="Tela inicial do Cardápio Bar" width="260" />
+  <img src="docs/screenshots/combos-whisky.png" alt="Tela de combos do Cardápio Bar" width="260" />
 </div>
+
+## Sobre o aplicativo
+
+O Cardápio Bar é um cardápio digital para consultar ofertas de Happy Hour e combos. Cada item pode exibir foto, descrição e preços.
+
+Entre os recursos do app estão:
+
+- Carrinho com controle de quantidades e cálculo de subtotal, entrega e total.
+- Localização do dispositivo, com opção para abrir as coordenadas no Google Maps.
+- Notificações locais para alertas e lembretes.
+- Área autenticada para cadastrar, editar e remover produtos, incluindo envio de fotos pela câmera ou galeria.
 
 ## Android APK
 
